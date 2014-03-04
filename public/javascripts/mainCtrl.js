@@ -18,6 +18,8 @@ angular.module('energyApp', [])
       pvwURl += "address=" + energy.zip;
       $http.get(pvwURl).success(function(data, status, headers, config) {
           $scope.pvdata = data;
+          globaldata = data;
+          console.log(data);
           $scope.ajax2 = true;
       }).error(function(data, status, headers, config) {alert("There was an error processing your form");});
     };
