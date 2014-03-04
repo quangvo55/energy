@@ -37,6 +37,8 @@
           <input type="text" name="zip" ng-model='add.zip' class="form-control" id="Zip" placeholder="94043">
           <span class="help-block" ng-show="energyForm.zip.$pristine">Required</span>
           </div>
+        </div>
+        <div class="col-md-6" id="return1">
         <div class="form-group">
           <label for="exampleInputFile">File input</label>
           <input type="file" id="exampleInputFile"> 
@@ -45,78 +47,135 @@
         <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
       </form>
     </div>
-    <div class="col-md-6" id="return1">
+    <!--<div class="col-md-6" id="return1">
       <div ng-show="add.addr1.length">
         Your address is: <br/><b>
         {{add.addr1 | uppercase}} {{add.city | uppercase}} <span ng-show="add.state.length">,</span>{{add.state | uppercase}} {{add.zip}}</b> <br/>
       </div>
-      <div ng-show="ajax1 == true">
-      <h1>Utility Information</h1>
-      Utility Name: {{utildata.outputs.utility_name}} <br/>
-      Commerial Rate: {{utildata.outputs.commercial}} <br/>
-      Industrial Rate: {{utildata.outputs.industrial}} <br/>
-      Residential Rate: {{utildata.outputs.residential}} <br/>
-      </div>
-      <div ng-show="ajax1 == true">
+      <div ng-show="ajax2 == true">
       <h1>Solar Data</h1>
       AC Annual: {{pvdata.outputs.ac_annual}} <br/>
       Solar Radiation Anuual: {{pvdata.outputs.solrad_annual}} <br/>
-      <!--highcahrts-->
-      <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
       </div>
+    </div>-->
+    <div class="col-md-12" ng-show="ajax1 == true">
+      <h1>Utility Information for: {{utildata.outputs.utility_name}}</h1>
+      <div id="kwhChart"></div>
+      <h1>Solar Information</h1>
+      <div id="pvChart"></div>
     </div>
-  </div>
 </div>
 <script src="/javascripts/highcharts.js"></script>
 <script type="text/javascript" src="/javascripts/mainCtrl.js"></script>
 <script type="text/javascript">
-$(function () {
-        $('#container').highcharts({
-            title: {
-                text: 'Monthly Solar Production',
-                x: -20 //center
-            },
-            subtitle: {
-                text: 'Source: www.nrel.gov',
-                x: -20
-            },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            },
-            yAxis: {
-                title: {
-                    text: 'kWh'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: ' kWh'
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [{
-                name: 'AC',
-                data: [430.11, 380.14, 490.17, 574.71, 543.61, 544.12, 587.04, 598.46, 503.2, 436.6, 433.71, 375.42]
-            }, {
-                name: 'DC',
-                data: [469.8, 417.54, 536.64, 628.74, 595.68, 594.78, 640.34, 653.52, 550.37, 479.18, 473.84, 412.87]
-            }, {
-                name: 'POA',
-                data: [147.51, 131, 169.25, 198.61, 188.32, 189.9, 208.15, 213.29, 179.3, 152.47, 153.77, 131.29]
-            }]
-        });
-    });
-    
+function loadUtilHC(utildata) {
+  var utilName = utildata.outputs.utility_name;
+  $('#kwhChart').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Dollar Cost per kWH for ' + utilName
+          },
+          subtitle: {
+            text: 'Source: www.nrel.gov',
+            x: -20
+          },
+          colors : [
+            '#00CC00'
+          ],
+          xAxis: {
+              categories: [
+                  'Commercial', 'Residential', 'Industrial'
+              ],
+              labels: {
+                  align: 'right',
+                  style: {
+                      fontSize: '13px',
+                      fontFamily: 'Verdana, sans-serif'
+                  }
+              }
+          },
+          yAxis: {
+              min: 0,
+              title: {
+                  text: '$/kWh'
+              }
+          },
+          legend: {
+              enabled: false
+          },
+          tooltip: {
+              pointFormat: '$/kWh: <b>{point.y:.3f}</b>',
+          },
+          series: [{
+              name: 'kWh',
+              data: [utildata.outputs.commercial, utildata.outputs.residential, utildata.outputs.industrial],
+              dataLabels: {
+                  enabled: true,
+                  style: {
+                      fontSize: '16px',
+                      fontFamily: 'Verdana, sans-serif',
+                  }
+              }
+          }]
+      });
+}
 
-    </script>
+function loadSolarHC(pvdata) {
+  $('#pvChart').highcharts({
+        title: {
+            text: 'Monthly Solar Production',
+            x: -20 //center
+        },
+        subtitle: {
+            text: 'Source: www.nrel.gov',
+            x: -20
+        },
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+        yAxis: {
+            title: {
+                text: 'kWh'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }],
+            itemStyle: {
+              fontSize: '16px'
+            }
+        },
+        tooltip: {
+            valueSuffix: ' kWh'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0,
+            itemStyle: {
+              fontSize: '16px'
+            }
+        },
+        series: [{
+            name: 'AC',
+            data: pvdata.outputs.ac_monthly
+        }, {
+            name: 'DC',
+            data: pvdata.outputs.dc_monthly
+        }, {
+            name: 'POA',
+            data: pvdata.outputs.poa_monthly
+        }]
+    });
+}
+</script>
+<script>
+var lat, lon;
+</script>
 </body>
 </html>
