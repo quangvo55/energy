@@ -6,22 +6,6 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
   <script src="../bower_components/angular/angular.js"></script>
   <script type="text/javascript" src="/javascripts/mainCtrl.js"></script>
-  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-
-  <script>
-  function mainctrl($scope, $http) {
-    $scope.data;
-    $scope.ajax1 = false;
-    $scope.submit = function(energy) {
-      //todo have to make sure form is in correct data
-      var url = "http://developer.nrel.gov/api/utility_rates/v3.json?api_key=6cdltAisWpaRxkOYMHNFB5c1IGWPc5NFUPXfX4T2&";
-      url += "address=" + energy.zip;
-      $http.get(url).success(function(data, status, headers, config) {
-          $scope.data = data;
-          $scope.ajax1 = true;
-      }).error(function(data, status, headers, config) {alert("There was an error processing your form");});
-    };
-  }
-  </script>-->
 </head>
 <body ng-controller='mainctrl'>
 <div class="wrapper">
@@ -67,10 +51,17 @@
         {{add.addr1 | uppercase}} {{add.city | uppercase}} <span ng-show="add.state.length">,</span>{{add.state | uppercase}} {{add.zip}}</b> <br/>
       </div>
       <div ng-show="ajax1 == true">
-      Utility Name: {{data.outputs.utility_name}} <br/>
-      Commerial Rate: {{data.outputs.commercial}} <br/>
-      Industrial Rate: {{data.outputs.industrial}} <br/>
-      Residential Rate: {{data.outputs.residential}} <br/>
+      <h1>Utility Information</h1>
+      Utility Name: {{utildata.outputs.utility_name}} <br/>
+      Commerial Rate: {{utildata.outputs.commercial}} <br/>
+      Industrial Rate: {{utildata.outputs.industrial}} <br/>
+      Residential Rate: {{utildata.outputs.residential}} <br/>
+      </div>
+      <div ng-show="ajax1 == true">
+      <h1>Solar Data</h1>
+      AC Annual: {{pvdata.outputs.ac_annual}} <br/>
+      Solar Radiation Anuual: {{pvdata.outputs.solrad_annual}} <br/>
+      <!--highcahrts-->
       </div>
     </div>
   </div>
