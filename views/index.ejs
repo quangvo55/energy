@@ -1,11 +1,79 @@
 <!DOCTYPE html>
-<html ng-app>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="../bower_components/angular/angular.js"></script>
-  </head>
-  <body>
-	<input type="text" ng-model="test"> {{test}}
-  </body>
+<html ng-app='energyApp'>
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
+  <script src="../bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="/javascripts/mainCtrl.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-
+  <script>
+  function mainctrl($scope, $http) {
+    $scope.data;
+    $scope.ajax1 = false;
+    $scope.submit = function(energy) {
+      //todo have to make sure form is in correct data
+      var url = "http://developer.nrel.gov/api/utility_rates/v3.json?api_key=6cdltAisWpaRxkOYMHNFB5c1IGWPc5NFUPXfX4T2&";
+      url += "address=" + energy.zip;
+      $http.get(url).success(function(data, status, headers, config) {
+          $scope.data = data;
+          $scope.ajax1 = true;
+      }).error(function(data, status, headers, config) {alert("There was an error processing your form");});
+    };
+  }
+  </script>-->
+</head>
+<body ng-controller='mainctrl'>
+<div class="wrapper">
+    <nav>
+      <h1>Save With Solar</h1>
+    <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="/about/">About</a></li>
+    </ul>
+  </nav>
+  <div class='row'>
+    <div class="col-md-6">
+      <form novalidate name="energyForm" role="form" ng-submit="submit(add)">
+        <div class="form-group">
+            <label for="addr1">Address one:</label>
+            <input type="text" name="addr1" ng-model='add.addr1' class="form-control" id="addr1" required placeholder="1600 Amphitheatre Pkwy">
+            <span class="help-block" ng-show="energyForm.addr1.$pristine">Required</span>
+          </div>
+         <div class="form-group">
+          <label for="addr2">City</label>
+          <input type="text" name="city" ng-model='add.city' class="form-control" id="City" placeholder="Mountain View">
+          </div> 
+          <div class="form-group">
+          <label for="State">State</label>
+          <input type="text" name="state" ng-model='add.state' class="form-control" id="State" placeholder="CA">
+           </div>
+           <div class="form-group">
+          <label for="zip">Zip</label>
+          <input type="text" name="zip" ng-model='add.zip' class="form-control" id="Zip" placeholder="94043">
+          <span class="help-block" ng-show="energyForm.zip.$pristine">Required</span>
+          </div>
+        <div class="form-group">
+          <label for="exampleInputFile">File input</label>
+          <input type="file" id="exampleInputFile"> 
+          <p class="help-block">Upload Green Button data here</p>
+        </div>
+        <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+    <div class="col-md-6" id="return1">
+      <div ng-show="add.addr1.length">
+        Your address is: <br/><b>
+        {{add.addr1 | uppercase}} {{add.city | uppercase}} <span ng-show="add.state.length">,</span>{{add.state | uppercase}} {{add.zip}}</b> <br/>
+      </div>
+      <div ng-show="ajax1 == true">
+      Utility Name: {{data.outputs.utility_name}} <br/>
+      Commerial Rate: {{data.outputs.commercial}} <br/>
+      Industrial Rate: {{data.outputs.industrial}} <br/>
+      Residential Rate: {{data.outputs.residential}} <br/>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
 </html>

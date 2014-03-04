@@ -1,0 +1,20 @@
+      <form name="energyForm" role="form">
+        <div class="form-group">
+            <label for="addr1">Address one:</label>
+            <input type="text" ng-model='addr1' class="form-control" id="addr1" required placeholder="1600 Amphitheatre Pkwy">
+
+          <label for="addr2">City</label>
+          <input type="text" ng-model='city' class="form-control" id="City" placeholder="">
+
+          <label for="State">State</label>
+          <input type="text" ng-model='state' class="form-control" id="State" placeholder="">
+
+          <label for="zip">Zip</label>
+          <input type="text" ng-model='zip' class="form-control" id="Zip" placeholder="">
+
+          <label for="exampleInputFile">File input</label>
+          <input type="file" id="exampleInputFile"> 
+          <p class="help-block">Upload Green Button data here</p>
+        Your address is <b>{{addr1}}<br/>
+        {{city}}, {{state}} {{zip}}</b><br>
+        <button type="submit" class="btn btn-default">Submit</button>
