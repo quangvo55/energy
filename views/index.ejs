@@ -3,27 +3,28 @@
 <head>
   <title><%= title %></title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/base.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/skeleton.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
 </head>
 <body ng-controller='mainctrl'>
-<div class="wrapper">
-    <nav>
-      <h1>Save With Solar</h1>
-    <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="/about/">About</a></li>
-    </ul>
-  </nav>
-  <div class='row'>
-    <div class="col-md-6">
+<header>
+  <div class="container">
+    <div class="eight columns">
+        <h1 id="banner-header"><a href="#">Save With Solar</a></h1>
+    </div>
+  </div>
+</header>
+<div class="container">
+    <div class="eight columns clearfix">
       <form novalidate name="energyForm" role="form" ng-submit="submit(add)">
         <div class="form-group">
             <label for="addr1">Address one:</label>
             <input type="text" name="addr1" ng-model='add.addr1' class="form-control" id="addr1" required placeholder="1600 Amphitheatre Pkwy">
             <span class="help-block" ng-show="energyForm.addr1.$pristine">Required</span>
-          </div>
+        </div>
          <div class="form-group">
           <label for="addr2">City</label>
           <input type="text" name="city" ng-model='add.city' class="form-control" id="City" placeholder="Mountain View">
@@ -38,15 +39,24 @@
           <span class="help-block" ng-show="energyForm.zip.$pristine">Required</span>
           </div>
         </div>
-        <div class="col-md-6" id="return1">
-        <div class="form-group">
+        <div class="eight columns clearfix">
           <label for="exampleInputFile">File input</label>
           <input type="file" id="exampleInputFile"> 
           <p class="help-block">Upload Green Button data here</p>
-        </div>
         <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
-      </form>
-    </div>
+        </form>
+        </div>
+        <div class="sixteen columns clearfix" ng-show="ajax1 == true">
+          <section id="util">
+              <h1>Utility Information for: {{utildata.outputs.utility_name}}</h1>
+              <div id="kwhChart"></div>
+            </section>
+          <section id="solar">
+            <h1>Solar Information</h1>
+            <div id="pvChart"></div>
+          </section>
+        </div>
+</div>
     <!--<div class="col-md-6" id="return1">
       <div ng-show="add.addr1.length">
         Your address is: <br/><b>
@@ -58,124 +68,11 @@
       Solar Radiation Anuual: {{pvdata.outputs.solrad_annual}} <br/>
       </div>
     </div>-->
-    <div class="col-md-12" ng-show="ajax1 == true">
-      <h1>Utility Information for: {{utildata.outputs.utility_name}}</h1>
-      <div id="kwhChart"></div>
-      <h1>Solar Information</h1>
-      <div id="pvChart"></div>
-    </div>
+
+  </div>
 </div>
 <script src="/javascripts/highcharts.js"></script>
 <script type="text/javascript" src="/javascripts/mainCtrl.js"></script>
-<script type="text/javascript">
-function loadUtilHC(utildata) {
-  var utilName = utildata.outputs.utility_name;
-  $('#kwhChart').highcharts({
-          chart: {
-              type: 'bar'
-          },
-          title: {
-              text: 'Dollar Cost per kWH for ' + utilName
-          },
-          subtitle: {
-            text: 'Source: www.nrel.gov',
-            x: -20
-          },
-          colors : [
-            '#00CC00'
-          ],
-          xAxis: {
-              categories: [
-                  'Commercial', 'Residential', 'Industrial'
-              ],
-              labels: {
-                  align: 'right',
-                  style: {
-                      fontSize: '13px',
-                      fontFamily: 'Verdana, sans-serif'
-                  }
-              }
-          },
-          yAxis: {
-              min: 0,
-              title: {
-                  text: '$/kWh'
-              }
-          },
-          legend: {
-              enabled: false
-          },
-          tooltip: {
-              pointFormat: '$/kWh: <b>{point.y:.3f}</b>',
-          },
-          series: [{
-              name: 'kWh',
-              data: [utildata.outputs.commercial, utildata.outputs.residential, utildata.outputs.industrial],
-              dataLabels: {
-                  enabled: true,
-                  style: {
-                      fontSize: '16px',
-                      fontFamily: 'Verdana, sans-serif',
-                  }
-              }
-          }]
-      });
-}
-
-function loadSolarHC(pvdata) {
-  $('#pvChart').highcharts({
-        title: {
-            text: 'Monthly Solar Production',
-            x: -20 //center
-        },
-        subtitle: {
-            text: 'Source: www.nrel.gov',
-            x: -20
-        },
-        xAxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        },
-        yAxis: {
-            title: {
-                text: 'kWh'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }],
-            itemStyle: {
-              fontSize: '16px'
-            }
-        },
-        tooltip: {
-            valueSuffix: ' kWh'
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0,
-            itemStyle: {
-              fontSize: '16px'
-            }
-        },
-        series: [{
-            name: 'AC',
-            data: pvdata.outputs.ac_monthly
-        }, {
-            name: 'DC',
-            data: pvdata.outputs.dc_monthly
-        }, {
-            name: 'POA',
-            data: pvdata.outputs.poa_monthly
-        }]
-    });
-}
-</script>
-<script>
-var lat, lon;
-</script>
+<script type="text/javascript" src="/javascripts/hcCustom.js"></script>
 </body>
 </html>

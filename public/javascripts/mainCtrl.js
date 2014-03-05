@@ -5,6 +5,7 @@ angular.module('energyApp', [])
     $scope.ajax1 = false;
     $scope.ajax2 = false;
     $scope.submit = function(energy) {
+      var lat, lon;
       var google_api_key = 'AIzaSyB1rXlPri1LEFcjbySjyo3_q1Z8RuUPWpU';
       var googleurl = "https://maps.googleapis.com/maps/api/geocode/json?&sensor=true&key=" + google_api_key + "&address="
       +energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
@@ -19,7 +20,6 @@ angular.module('energyApp', [])
         $http.get(url).success(function(data, status, headers, config) {
             $scope.utildata = data;
             $scope.ajax1 = true;
-            var utilName = "LADWP";
             loadUtilHC(data);
         }).error(function(data, status, headers, config) {alert("There was an error processing your form");});
 
