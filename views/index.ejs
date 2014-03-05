@@ -2,14 +2,13 @@
 <html ng-app='energyApp'>
 <head>
   <title><%= title %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel="stylesheet" type="text/css" href="/stylesheets/base.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/skeleton.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
 </head>
-<body ng-controller='mainctrl'>
+<body ng-controller='mainCtrl'>
 <header>
   <div class="container">
     <div class="eight columns">
@@ -46,7 +45,7 @@
         <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
         </form>
         </div>
-        <div class="sixteen columns clearfix" ng-show="ajax1 == true">
+        <div class="sixteen columns clearfix" ng-show="showGraphs == true">
           <section id="util">
               <h1>Utility Information for: {{utildata.outputs.utility_name}}</h1>
               <div id="kwhChart"></div>
