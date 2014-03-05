@@ -7,6 +7,13 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
+  <style>
+  .page-divider {
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: #e4e4e4;
+  }
+  </style>
 </head>
 <body ng-controller='mainCtrl'>
 <header>
@@ -16,6 +23,7 @@
     </div>
   </div>
 </header>
+<div class="page-divider"></div>
 <div class="container">
     <div class="eight columns clearfix">
       <form novalidate name="energyForm" role="form" ng-submit="submit(add)">
@@ -39,21 +47,20 @@
           </div>
         </div>
         <div class="eight columns clearfix">
-          <label for="exampleInputFile">File input</label>
-          <input type="file" id="exampleInputFile"> 
+          <label for="input">File input</label>
+          <input type="file" id="files"> 
           <p class="help-block">Upload Green Button data here</p>
         <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
         </form>
         </div>
+
         <div class="sixteen columns clearfix" ng-show="showGraphs == true">
-          <section id="util">
+                <div class="page-divider"></div>
               <h1>Utility Information for: {{utildata.outputs.utility_name}}</h1>
               <div id="kwhChart"></div>
-            </section>
-          <section id="solar">
+              <div class="page-divider"></div>
             <h1>Solar Information</h1>
             <div id="pvChart"></div>
-          </section>
         </div>
 </div>
     <!--<div class="col-md-6" id="return1">
@@ -73,5 +80,32 @@
 <script src="/javascripts/highcharts.js"></script>
 <script type="text/javascript" src="/javascripts/mainCtrl.js"></script>
 <script type="text/javascript" src="/javascripts/hcCustom.js"></script>
+<script>
+//http://stackoverflow.com/questions/21318045/javascript-upload-and-read-xml-file-on-the-client-side
+      function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        // Loop through the FileList
+        for (var i = 0, f; f = files[i]; i++) {
+
+          var reader = new FileReader();
+
+          // Closure to capture the file information.
+          reader.onload = (function(theFile) {
+            return function(e) {
+              // Print the contents of the file
+              console.log(e);
+              test = e.target.result;
+            };
+          })(f);
+
+          // Read in the file
+          //reader.readAsDataText(f,UTF-8);
+          reader.readAsText(f,"UTF-8");
+        }
+      }
+
+     document.getElementById('files').addEventListener('change', handleFileSelect, false);
+      </script>
 </body>
 </html>
