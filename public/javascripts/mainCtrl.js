@@ -1,5 +1,20 @@
 var app = angular.module('energyApp', []);
 
+app.config(function($httpProvider) {
+  $httpProvider.interceptors.push(function() {
+    return {
+      'request': function(config) {
+         document.body.style.cursor = "progress";
+         return config;
+      },
+      'response': function(response) {
+        setTimeout(function(){document.body.style.cursor = 'default';},1000);
+        return response;
+      }
+    };
+  });
+});
+
 app.service('dataService', function($http) {
   this.google_api_key = 'AIzaSyB1rXlPri1LEFcjbySjyo3_q1Z8RuUPWpU',
   this.nrel_api_key = '6cdltAisWpaRxkOYMHNFB5c1IGWPc5NFUPXfX4T2',
@@ -12,6 +27,9 @@ app.service('dataService', function($http) {
         key: this.google_api_key,
         address: address
       }
+    }).error(function(data, status, headers, config) {
+      console.log(data);
+      alert(data);
     });
   },
   this.getUtil = function(lat, lon) {
@@ -42,6 +60,7 @@ app.service('dataService', function($http) {
 
 app.controller('mainCtrl', function($scope, dataService) {
     $scope.data = null;
+    $scope.utildata;
     $scope.showGraphs = false;
     $scope.submit = function(energy) {
       var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
@@ -51,6 +70,7 @@ app.controller('mainCtrl', function($scope, dataService) {
           lon = res.data.results[0].geometry.location.lng;
           dataService.getUtil(lat, lon).then(function(res) {
             $scope.showGraphs = true;
+            $scope.utildata = res.data;
             loadUtilHC(res.data);
           });
           dataService.getPV(lat, lon).then(function(res) {
