@@ -59,14 +59,7 @@ app.service('dataService', function($http) {
   this.getTarriffs = function(utilName) {
     return $http({
       method: 'GET',
-      url: 'http://en.openei.org/services/rest/utility_rates?',
-      params : {
-        version: 'latest',
-        format: 'json_plain',
-        detail: 'full',
-        ratesforutility : utilName,
-        api_key: this.nrel_api_key
-      }
+      url: 'ladwp.json',
     });
   }
 });
@@ -84,7 +77,6 @@ app.controller('mainCtrl', function($scope, dataService) {
           dataService.getUtil(lat, lon).then(function(res) {
             $scope.showGraphs = true;
             $scope.utilName = res.data.outputs.utility_name;
-            console.log($scope.utilName);
             loadUtilHC(res.data);
           });
           dataService.getPV(lat, lon).then(function(res) {

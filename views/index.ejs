@@ -49,12 +49,15 @@
         </div>
 
         <div class="sixteen columns clearfix" ng-show="showGraphs == true">
-                <div class="page-divider"></div>
+            <div class="page-divider"></div>
               <h1>Utility Information for: {{utilname}}</h1>
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
             <h1>Solar Information</h1>
             <div id="pvChart"></div>
+            <div class="page-divider"></div>
+            <h1>Daily Power Consumption</h1>
+            <div id="dcChart"></div>
         </div>
 </div>
     <!--<div class="col-md-6" id="return1">
@@ -88,18 +91,44 @@
           reader.onload = (function(theFile) {
             return function(e) {
               // Print the contents of the file
-              console.log(e);
-              test = e.target.result;
-              test = xmlToJson(parseXml(test));
-              //will data info always be at 5?
-              var data = var data = test.feed.entry[5].content.IntervalBlock.IntervalReading;
-              for (var i=0; i< data.length; i++) {console.log(data[i].value['#text']);}
+              gbJSONData = xmlToJson(parseXml(e.target.result));
+              gbData(gbJSONData);
             };
           })(f);
-
           // Read in the file
           //reader.readAsDataText(f,UTF-8);
           reader.readAsText(f,"UTF-8");
+        }
+      }
+      var allData = [];
+      var dailyData = [];
+      function gbData(gbJSONData) {
+        var dataEntries = gbJSONData.feed.entry;
+        for (var i=4; i<dataEntries.length-1; i++) {
+            var intReadingsArr = dataEntries[i].content.IntervalBlock.IntervalReading;
+              for (var j=0; j<intReadingsArr.length; j++) {
+                allData.push(intReadingsArr[j].value['#text']);
+              }
+        }
+        dayData(allData);
+        dailyConsumption(dailyData);
+      }
+      function dayFill() {
+        var arr = [];
+        for (var i=0; i<365; i++) {arr.push([]);}
+        return arr;
+      }
+
+      dailyData = dayFill();
+
+      function dayData(allData) {
+        allData.unshift(0);
+        for (var i=1, j=0; i< allData.length; i++) {
+          dailyData[j].push(allData[i]);
+          if (i%24==0&&i!=0) j++;
+        }
+        for (var i=0; i<dailyData.length; i++) {
+          dailyData[i] = dailyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000
         }
       }
 
