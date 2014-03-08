@@ -49,7 +49,7 @@ app.service('dataService', function($http) {
       url: 'http://developer.nrel.gov/api/pvwatts/v4.json?',
       params : {
         api_key : this.nrel_api_key,
-        system_size : 575,
+        system_size : 4,
         derate: 0.77,
         lat : lat,
         lon : lon
@@ -64,7 +64,7 @@ app.service('dataService', function($http) {
   }
 });
 
-app.controller('mainCtrl', function($scope, dataService) {
+app.controller('mainCtrl', function($scope, $rootScope, dataService) {
     $scope.data = null;
     $scope.utilName;
     $scope.showGraphs = false;
@@ -85,10 +85,12 @@ app.controller('mainCtrl', function($scope, dataService) {
           });
         dataService.getPV(lat, lon).then(function(res) {
           loadSolarHC(res.data);
+          solarData = res.data;
         });
       });
     }
     $scope.submit = function(energy) {
+      $scope.enterAdd = false;
       var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
       dataService.getData(address).then(
         function(res) {
@@ -101,6 +103,7 @@ app.controller('mainCtrl', function($scope, dataService) {
           });
           dataService.getPV(lat, lon).then(function(res) {
             loadSolarHC(res.data);
+            solarData = res.data;
           });
           /*dataService.getTarriffs("LADWP").then(function(res) {
             console.log(res);

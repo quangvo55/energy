@@ -51,8 +51,8 @@ function loadUtilHC(utildata) {
       });
 }
 
-function loadSolarHC(pvdata) {
-  $('#pvChart').highcharts({
+function loadSolarHC(pvdata, con) {
+   chart1 = $('#pvChart').highcharts({
         title: {
             text: 'Monthly Solar Production',
             x: -20 //center
@@ -91,16 +91,17 @@ function loadSolarHC(pvdata) {
             }
         },
         series: [{
-            name: 'AC',
-            data: pvdata.outputs.ac_monthly
-        }, {
             name: 'DC',
             data: pvdata.outputs.dc_monthly
+        },
+        {
+          name: 'Monthly Consumption',
+          data: con
         }]
     });
 }
 
-function dailyConsumption(dataset) {
+function dailyConHC(dataset) {
   $('#dcChart').highcharts({
       chart: {
           zoomType: 'x',
