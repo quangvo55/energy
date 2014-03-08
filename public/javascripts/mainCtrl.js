@@ -49,7 +49,7 @@ app.service('dataService', function($http) {
       url: 'http://developer.nrel.gov/api/pvwatts/v4.json?',
       params : {
         api_key : this.nrel_api_key,
-        system_size : 4,
+        system_size : 4.05,
         derate: 0.77,
         lat : lat,
         lon : lon
@@ -69,6 +69,7 @@ app.controller('mainCtrl', function($scope, $rootScope, dataService) {
     $scope.utilName;
     $scope.showGraphs = false;
     $scope.enterAdd = false;
+    $scope.dctotal;
     $scope.enterAdd = function() {
       $scope.enterAdd = true;
     }
@@ -86,6 +87,7 @@ app.controller('mainCtrl', function($scope, $rootScope, dataService) {
         dataService.getPV(lat, lon).then(function(res) {
           loadSolarHC(res.data);
           solarData = res.data;
+          $scope.dctotal = res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)
         });
       });
     }
