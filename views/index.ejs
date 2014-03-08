@@ -5,7 +5,7 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/base.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/skeleton.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
-  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/fontello.css">
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
 </head>
@@ -13,18 +13,19 @@
 <header>
   <div class="container">
     <div class="eight columns">
-        <h1 id="banner-header"><a href="#">Save With Solar</a></h1>
+        <img src="sunhome.png" alt="sunhomelogo" width="50">
+        <h1 id="banner-header"><a href="#">SunHome</a></h1>
     </div>
   </div>
 </header>
-<div class="page-divider"></div>
 <div class="container">
-    <div class="eight columns clearfix">
-    <button id="geolacate" ng-click="geo()">Use my current location</button>
-    <button id="enterAddress" ng-click="enterAdd()">Enter an address</button>
+    <div class="eight columns clearfix firstPart">
+      <button id="geolacate" ng-click="geo()"><span class="icon-location"></span>Use my current location</button>
+      <span class="or">or</span>
+      <button id="enterAddress" ng-click="enterAdd()"><span class="icon-edit"></span>Enter an address</button>
       <form ng-show="enterAdd == true" novalidate name="energyForm" role="form" ng-submit="submit(add)">
         <div class="form-group">
-            <label for="addr1">Address one:</label>
+            <label for="addr1">Address:</label>
             <input type="text" name="addr1" ng-model='add.addr1' class="form-control" id="addr1" required placeholder="1600 Amphitheatre Pkwy">
             <span class="help-block" ng-show="energyForm.addr1.$pristine">Required</span>
         </div>
@@ -41,7 +42,8 @@
           <input type="text" name="zip" ng-model='add.zip' class="form-control" id="Zip" placeholder="94043">
           <span class="help-block" ng-show="energyForm.zip.$pristine">Required</span>
           </div>
-          <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
+          <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default"><span class="icon-login"></span>Submit</button>
+
         </form>
         </div>
         <div class="eight columns clearfix">
@@ -52,14 +54,14 @@
 
         <div class="sixteen columns clearfix" ng-show="showGraphs == true">
             <div class="page-divider"></div>
-              <h1>Utility Information for: {{utilName}}</h1>
+              <h1 class="icon-cog-alt">Utility Information for: <span class="dataTitle">{{utilName}}</span></h1>
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
-            <h1>Solar Information</h1>
+            <h1 class="icon-sun">Solar Information</h1>
             <h3>Annual Solar Output: {{dctotal}} <div style="display:inline" id="annualCon"></div></h3>
             <div id="pvChart"></div>
             <div class="page-divider"></div>
-            <h1 id="gbGraph">Daily Power Consumption</h1>
+            <h1 id="gbGraph" class="icon-flash">Daily Power Consumption</h1>
             <div id="dcChart"></div>
         </div>
 </div>
