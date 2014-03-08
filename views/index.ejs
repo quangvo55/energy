@@ -21,7 +21,8 @@
 <div class="container">
     <div class="eight columns clearfix">
     <button id="geolacate" ng-click="geo()">Use my current location</button>
-      <form novalidate name="energyForm" role="form" ng-submit="submit(add)">
+    <button id="enterAddress" ng-click="enterAdd()">Enter an address</button>
+      <form ng-show="enterAdd == true" novalidate name="energyForm" role="form" ng-submit="submit(add)">
         <div class="form-group">
             <label for="addr1">Address one:</label>
             <input type="text" name="addr1" ng-model='add.addr1' class="form-control" id="addr1" required placeholder="1600 Amphitheatre Pkwy">
@@ -40,13 +41,13 @@
           <input type="text" name="zip" ng-model='add.zip' class="form-control" id="Zip" placeholder="94043">
           <span class="help-block" ng-show="energyForm.zip.$pristine">Required</span>
           </div>
+          <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
+        </form>
         </div>
         <div class="eight columns clearfix">
           <label for="input">File input</label>
           <input type="file" id="files"> 
           <p class="help-block">Upload Green Button data here</p>
-        <button type="submit" ng-disabled="!energyForm.$valid" class="btn btn-default">Submit</button>
-        </form>
         </div>
 
         <div class="sixteen columns clearfix" ng-show="showGraphs == true">

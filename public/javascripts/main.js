@@ -31,15 +31,17 @@
               }
         }
         dayData(allData);
-        dailyConsumption(dailyData);
+        dailyConsumption(dailyData); //highcharts
+        monthData(dailyData);
+        costPerMonth(monthlyData);
       }
-      function dayFill() {
+      function dayFill(max) {
         var arr = [];
-        for (var i=0; i<365; i++) {arr.push([]);}
+        for (var i=0; i<max; i++) {arr.push([]);}
         return arr;
       }
 
-      dailyData = dayFill();
+      dailyData = dayFill(365);
 
       function dayData(allData) {
         allData.unshift(0);
@@ -50,6 +52,47 @@
         for (var i=0; i<dailyData.length; i++) {
           dailyData[i] = dailyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000
         }
+      }
+
+      var daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+      var monthlyData = [];
+      monthlyData = dayFill(12);
+
+      function monthData(dailyData) {
+        for (var i=0;i<daysInMonth.length; i++) {
+          monthlyData[i] = dailyData.splice(0, daysInMonth[i]);
+        }
+      }
+      var monthlyCost = [];
+      var monthlyTotal = [];
+      //costPerMonth(monthlyData);
+      function costPerMonth(monthlyData) {
+        var rate2 = [6,7,,8,9];
+        var tier1rate = .07;
+        var tier2rate = [.07, .085, .012];
+        for (var i=0; i< monthlyData.length; i++) {
+          monthlyTotal[i] = monthlyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0);
+          var total = 0;
+          var etotal = 0;
+          if (rate2.indexOf(i) == -1) {
+              for (var j=0; j<monthlyData[i].length;j++) {
+                total += monthlyData[i][j] * tier1rate;
+              }
+          } else {
+            for (var j=0; j<monthlyData[i].length;j++) {
+              if (0 < etotal && etotal < 350) {
+                total += monthlyData[i][j] * tier2rate[0];
+              } else if ( 350 < etotal && etotal < 1050) {
+                total += monthlyData[i][j] * tier2rate[1];
+              } else if (etotal > 1050) {
+                total += monthlyData[i][j] * tier2rate[2];
+              }
+              etotal += monthlyData[i][j];
+            }
+          }
+          monthlyCost.push(total);
+        }
+        console.log('done');
       }
 
       function xmlToJson(xml) {
@@ -108,3 +151,4 @@
         
 
      document.getElementById('files').addEventListener('change', handleFileSelect, false);
+

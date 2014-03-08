@@ -49,7 +49,7 @@ app.service('dataService', function($http) {
       url: 'http://developer.nrel.gov/api/pvwatts/v4.json?',
       params : {
         api_key : this.nrel_api_key,
-        system_size : 4,
+        system_size : 575,
         derate: 0.77,
         lat : lat,
         lon : lon
@@ -68,7 +68,12 @@ app.controller('mainCtrl', function($scope, dataService) {
     $scope.data = null;
     $scope.utilName;
     $scope.showGraphs = false;
+    $scope.enterAdd = false;
+    $scope.enterAdd = function() {
+      $scope.enterAdd = true;
+    }
     $scope.geo = function() {
+      $scope.enterAdd = false;
       navigator.geolocation.getCurrentPosition(function(data) {
         var lat = data.coords.latitude;
         var lon = data.coords.longitude;
