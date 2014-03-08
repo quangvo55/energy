@@ -68,6 +68,21 @@ app.controller('mainCtrl', function($scope, dataService) {
     $scope.data = null;
     $scope.utilName;
     $scope.showGraphs = false;
+    $scope.geo = function() {
+      navigator.geolocation.getCurrentPosition(function(data) {
+        var lat = data.coords.latitude;
+        var lon = data.coords.longitude;
+
+        dataService.getUtil(lat, lon).then(function(res) {
+            $scope.showGraphs = true;
+            $scope.utilName = res.data.outputs.utility_name;
+            loadUtilHC(res.data);
+          });
+        dataService.getPV(lat, lon).then(function(res) {
+          loadSolarHC(res.data);
+        });
+      });
+    }
     $scope.submit = function(energy) {
       var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
       dataService.getData(address).then(
@@ -82,9 +97,9 @@ app.controller('mainCtrl', function($scope, dataService) {
           dataService.getPV(lat, lon).then(function(res) {
             loadSolarHC(res.data);
           });
-          dataService.getTarriffs("LADWP").then(function(res) {
+          /*dataService.getTarriffs("LADWP").then(function(res) {
             console.log(res);
-          });
+          });*/
       });
     };
 });

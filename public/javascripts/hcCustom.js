@@ -96,7 +96,7 @@ function loadSolarHC(pvdata) {
         }, {
             name: 'DC',
             data: pvdata.outputs.dc_monthly
-        }
+        }]
     });
 }
 
