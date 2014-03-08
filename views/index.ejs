@@ -49,12 +49,11 @@
         </form>
         </div>
         <div class="eight columns clearfix">
-          <label for="input">File input</label>
-          <input type="file" id="files"> 
+          <button id="gbUpload"><img src="/images/gblogo.png"/></button>
           <p class="help-block">Upload Green Button data here</p>
         </div>
 
-        <div class="sixteen columns clearfix" ng-show="showGraphs == true">
+        <div style="width:100%" class="sixteen columns clearfix" ng-show="showGraphs == true">
             <div class="page-divider"></div>
               <h1 class="icon-cog-alt">Utility Information for: <span class="dataTitle">{{utilName}}</span></h1>
               <div id="kwhChart"></div>

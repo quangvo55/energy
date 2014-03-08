@@ -8,7 +8,7 @@
   dailyData = dayFill(365);
   monthlyData = dayFill(12);
 
-  function handleFileSelect(evt) {
+  /*function handleFileSelect(evt) {
     //http://stackoverflow.com/questions/21318045/javascript-upload-and-read-xml-file-on-the-client-side
     var files = evt.target.files; // FileList object
 
@@ -29,7 +29,7 @@
       //reader.readAsDataText(f,UTF-8);
       reader.readAsText(f,"UTF-8");
     }
-  }
+  }*/
 
 
   function gbData(gbJSONData) {
@@ -158,7 +158,17 @@
         parseXml = function() { return null; }
     }
     $('#gbGraph').hide();
-
+    $("#gbUpload").click(function() {
+      $.ajax({
+    type: "GET",
+    url: "coastal.xml",
+    dataType: "xml",
+    success: function(xml){
+          gbJSONData = xmlToJson(xml);
+          gbData(gbJSONData);
+    }
+});
+    });
     document.getElementById('files').addEventListener('change', handleFileSelect, false);
   }
 //})();
