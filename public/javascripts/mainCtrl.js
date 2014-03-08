@@ -55,12 +55,25 @@ app.service('dataService', function($http) {
         lon : lon
       }
     });
+  },
+  this.getTarriffs = function(utilName) {
+    return $http({
+      method: 'GET',
+      url: 'http://en.openei.org/services/rest/utility_rates?',
+      params : {
+        version: 'latest',
+        format: 'json_plain',
+        detail: 'full',
+        ratesforutility : utilName,
+        api_key: this.nrel_api_key
+      }
+    });
   }
 });
 
 app.controller('mainCtrl', function($scope, dataService) {
     $scope.data = null;
-    $scope.utildata;
+    $scope.utilName;
     $scope.showGraphs = false;
     $scope.submit = function(energy) {
       var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
@@ -70,11 +83,15 @@ app.controller('mainCtrl', function($scope, dataService) {
           lon = res.data.results[0].geometry.location.lng;
           dataService.getUtil(lat, lon).then(function(res) {
             $scope.showGraphs = true;
-            $scope.utildata = res.data;
+            $scope.utilName = res.data.outputs.utility_name;
+            console.log($scope.utilName);
             loadUtilHC(res.data);
           });
           dataService.getPV(lat, lon).then(function(res) {
             loadSolarHC(res.data);
+          });
+          dataService.getTarriffs("LADWP").then(function(res) {
+            console.log(res);
           });
       });
     };

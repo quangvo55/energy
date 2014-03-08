@@ -5,15 +5,9 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/base.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/skeleton.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
-  <style>
-  .page-divider {
-  border-width: 0 0 1px;
-  border-style: solid;
-  border-color: #e4e4e4;
-  }
-  </style>
 </head>
 <body ng-controller='mainCtrl'>
 <header>
@@ -56,7 +50,7 @@
 
         <div class="sixteen columns clearfix" ng-show="showGraphs == true">
                 <div class="page-divider"></div>
-              <h1>Utility Information for: {{utildata.outputs.utility_name}}</h1>
+              <h1>Utility Information for: {{utilname}}</h1>
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
             <h1>Solar Information</h1>
@@ -96,6 +90,10 @@
               // Print the contents of the file
               console.log(e);
               test = e.target.result;
+              test = xmlToJson(parseXml(test));
+              //will data info always be at 5?
+              var data = var data = test.feed.entry[5].content.IntervalBlock.IntervalReading;
+              for (var i=0; i< data.length; i++) {console.log(data[i].value['#text']);}
             };
           })(f);
 
@@ -104,6 +102,61 @@
           reader.readAsText(f,"UTF-8");
         }
       }
+
+      function xmlToJson(xml) {
+        // Create the return object
+        var obj = {};
+
+        if (xml.nodeType == 1) { // element
+          // do attributes
+          if (xml.attributes.length > 0) {
+          obj["@attributes"] = {};
+            for (var j = 0; j < xml.attributes.length; j++) {
+              var attribute = xml.attributes.item(j);
+              obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+            }
+          }
+        } else if (xml.nodeType == 3) { // text
+          obj = xml.nodeValue;
+        }
+
+        // do children
+        if (xml.hasChildNodes()) {
+          for(var i = 0; i < xml.childNodes.length; i++) {
+            var item = xml.childNodes.item(i);
+            var nodeName = item.nodeName;
+            if (typeof(obj[nodeName]) == "undefined") {
+              obj[nodeName] = xmlToJson(item);
+            } else {
+              if (typeof(obj[nodeName].push) == "undefined") {
+                var old = obj[nodeName];
+                obj[nodeName] = [];
+                obj[nodeName].push(old);
+              }
+              obj[nodeName].push(xmlToJson(item));
+            }
+          }
+        }
+        return obj;
+      };
+
+      window.onload = function() {
+          if (window.DOMParser) {
+            parseXml = function(xmlStr) {
+                return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
+            };
+        } else if (typeof window.ActiveXObject != "undefined" && new window.ActiveXObject("Microsoft.XMLDOM")) {
+            parseXml = function(xmlStr) {
+                var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+                xmlDoc.async = "false";
+                xmlDoc.loadXML(xmlStr);
+                return xmlDoc;
+            };
+        } else {
+            parseXml = function() { return null; }
+        }
+      }
+        
 
      document.getElementById('files').addEventListener('change', handleFileSelect, false);
       </script>
