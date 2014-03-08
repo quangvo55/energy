@@ -287,6 +287,12 @@
 	.icon-cog-alt:before, .icon-sun:before, .icon-flash:before {color:#8F691A;}
 	.secondPart {border-top:3px solid #333;}
 	.addPad {padding:10px 0;}
+	.page-divider {
+	  border-width: 0 0 1px;
+	  border-style: solid;
+	  border-color: #e4e4e4;
+	  margin:20px 0;
+	  }
 
 @media only screen and (max-width: 480px) {
 	html {font-size:30%;}
