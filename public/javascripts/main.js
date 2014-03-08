@@ -47,7 +47,7 @@
     $("#gbGraph").show();
     loadSolarHC(solarData, monthlyTotal);
     var annualCon = monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    $("#annualCon").html("Annual electricty consuption: " + annualCon);
+    $("#annualCon").html("vs Annual electricty consuption: " + annualCon);
   }
 
   function dayFill(max) {
