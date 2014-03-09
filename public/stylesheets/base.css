@@ -287,6 +287,7 @@
 	.icon-cog-alt:before, .icon-sun:before, .icon-flash:before {color:#8F691A;}
 	.secondPart {border-top:3px solid #333;}
 	.addPad {padding:10px 0;}
+<<<<<<< HEAD
 	#gbUpload {display:block;}
 	#savings{text-align: center; background-color: #f2ba49; font-size: 28px; padding: 10px; 
 		margin: 40px 0 30px;
@@ -295,3 +296,6 @@
 		font-weight: bold;
 		color: red;
 	}
+=======
+	#gbUpload, #gbUpload:hover {background:none;border:0;}
+>>>>>>> f2ece4f9b8f0c2552716e8979784900eea9fd7a9
