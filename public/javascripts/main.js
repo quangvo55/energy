@@ -47,7 +47,7 @@
     $("#gbGraph").show();
     loadSolarHC(solarData, monthlyTotal);
     var annualCon = monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    $("#annualCon").html("vs Annual electricty consumption: " + annualCon);
+    $("#annualCon").html("Annual Energy Usage: " + annualCon);
     yearTotal = monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
     $("#savings").html("<h2>Annual Savings: "+yearTotal+"</h2>");
   }

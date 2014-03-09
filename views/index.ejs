@@ -14,10 +14,8 @@
 <body ng-controller='mainCtrl'>
 <header>
   <div class="container">
-    <div class="eight columns">
-        <img src="/images/sunhome.png" alt="sunhomelogo" width="50">
+  <img src="/images/sunhome.png" alt="sunhomelogo" width="50">
         <h1 id="banner-header"><a href="#">SunHome</a></h1>
-    </div>
   </div>
 </header>
 <div class="container">
@@ -58,7 +56,7 @@
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
             <h1 class="icon-sun">Solar Information</h1>
-            <h3>Annual Solar Output: {{dctotal}} <div style="display:inline" id="annualCon"></div></h3>
+            <h3>Annual Solar Output: {{dctotal}} <div id="annualCon"></div></h3>
             <div id="pvChart"></div>
             <div class="page-divider"></div>
             <h1 id="gbGraph" class="icon-flash">Daily Power Consumption</h1>
