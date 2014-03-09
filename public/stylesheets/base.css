@@ -287,3 +287,4 @@
 	.icon-cog-alt:before, .icon-sun:before, .icon-flash:before {color:#8F691A;}
 	.secondPart {border-top:3px solid #333;}
 	.addPad {padding:10px 0;}
+	#gbUpload, #gbUpload:hover {background:none;border:0;}
