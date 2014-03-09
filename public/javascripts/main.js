@@ -46,10 +46,10 @@
     costPerMonth(monthlyData);
     $("#gbGraph").show();
     loadSolarHC(solarData, monthlyTotal);
-    var annualCon = monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    $("#annualCon").html("Annual Energy Usage: " + annualCon);
+    var annualCon = (monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
+    $("#annualCon").html("Annual Energy Usage: " + annualCon + " kW");
     yearTotal = monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    $("#savings").html("<h2>Annual Savings: "+yearTotal+"</h2>");
+    $("#savings").html("<h2>Annual Savings: <span class='highlight'>$"+yearTotal+"</span></h2>");
   }
 
   function dayFill(max) {

@@ -46,9 +46,6 @@
 
         </form>
         </div>
-        <div class="eight columns clearfix">
-          <button id="gbUpload"><img src="/images/gblogo.png"/></button>
-        </div>
 
         <div style="width:100%" class="sixteen columns clearfix" ng-show="showGraphs == true">
             <div class="page-divider"></div>
@@ -56,13 +53,19 @@
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
             <h1 class="icon-sun">Solar Information</h1>
-            <h3>Annual Solar Output: {{dctotal}} <div id="annualCon"></div></h3>
+            <h3>System Size: 4.05</h3>
+            <h3>Annual Solar Output: {{dctotal}} kW <div id="annualCon"></div></h3>
             <div id="pvChart"></div>
             <div class="page-divider"></div>
-            <h1 id="gbGraph" class="icon-flash">Daily Power Consumption</h1>
-            <div id="dcChart"></div>
-            <div class="page-divider"></div>
-            <div id="savings"></div>
+            <div class="eight columns">
+              <button id="gbUpload"><img src="/images/gblogo.png"/></button>
+            </div>
+            <div class="sixteen columns">          
+              <h1 id="gbGraph" class="icon-flash">Daily Power Consumption</h1>
+              <div id="dcChart"></div>
+              <div class="page-divider"></div>
+              <div id="savings"></div>
+            </div>
         </div>
 </div>
     <!--<div class="col-md-6" id="return1">
