@@ -45,6 +45,7 @@
     dailyToMonthData(dailyData);
     costPerMonth(monthlyData);
     $("#gbGraph").show();
+    $('#showme').show();
     loadSolarHC(solarData, monthlyTotal);
     $(window).resize();
     var annualCon = (monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
