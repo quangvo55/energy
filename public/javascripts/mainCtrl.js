@@ -68,13 +68,13 @@ app.controller('mainCtrl', function($scope, $rootScope, dataService) {
     $scope.data = null;
     $scope.utilName;
     $scope.showGraphs = false;
-    $scope.enterAdd = false;
+    $scope.addy = false;
     $scope.dctotal;
-    $scope.enterAdd = function() {
-      $scope.enterAdd = true;
+    $scope.enterAddress = function() {
+      $scope.addy = true;
     }
     $scope.geo = function() {
-      $scope.enterAdd = false;
+      $scope.addy = false;
       navigator.geolocation.getCurrentPosition(function(data) {
         var lat = data.coords.latitude;
         var lon = data.coords.longitude;
@@ -94,7 +94,7 @@ app.controller('mainCtrl', function($scope, $rootScope, dataService) {
       });
     }
     $scope.submit = function(energy) {
-      $scope.enterAdd = false;
+      $scope.addy = false;
       var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
       dataService.getData(address).then(
         function(res) {

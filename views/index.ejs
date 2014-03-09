@@ -22,8 +22,8 @@
     <div class="eight columns clearfix firstPart">
       <button id="geolocate" ng-click="geo()"><span class="icon-location"></span>Use my current location</button>
       <span class="or">or</span>
-      <button id="enterAddress" ng-click="enterAdd()"><span class="icon-edit"></span>Enter an address</button>
-      <form ng-show="enterAdd == true" novalidate name="energyForm" role="form" ng-submit="submit(add)">
+      <button ng-click="enterAddress()"><span class="icon-edit"></span>Enter an address</button>
+      <form ng-show="addy == true" novalidate name="energyForm" role="form" ng-submit="submit(add)">
         <div class="form-group">
             <label for="addr1">Address:</label>
             <input type="text" name="addr1" ng-model='add.addr1' class="form-control" id="addr1" required placeholder="1600 Amphitheatre Pkwy">
