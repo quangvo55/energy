@@ -16,7 +16,7 @@ function loadUtilHC(utildata) {
           ],
           xAxis: {
               categories: [
-                  'Commercial', 'Residential', 'Industrial'
+                  'Residential'
               ]
           },
           yAxis: {
@@ -39,7 +39,7 @@ function loadUtilHC(utildata) {
           },
           series: [{
               name: 'kWh',
-              data: [utildata.outputs.commercial, utildata.outputs.residential, utildata.outputs.industrial],
+              data: [utildata.outputs.residential],
               dataLabels: {
                   enabled: true,
                   style: {

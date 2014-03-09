@@ -3,7 +3,7 @@
   var allData = [], dailyData = [], 
   daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31],
   monthlyData = [], monthlyCost = [], monthlyTotal = [],
-  solarData;
+  solarData, yearTotal;
   //init arrays
   dailyData = dayFill(365);
   monthlyData = dayFill(12);
@@ -47,7 +47,9 @@
     $("#gbGraph").show();
     loadSolarHC(solarData, monthlyTotal);
     var annualCon = monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    $("#annualCon").html("vs Annual electricty consuption: " + annualCon);
+    $("#annualCon").html("vs Annual electricty consumption: " + annualCon);
+    yearTotal = monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
+    $("#savings").html("<h2>Annual Savings: "+yearTotal+"</h2>");
   }
 
   function dayFill(max) {
@@ -169,6 +171,6 @@
     }
 });
     });
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    //document.getElementById('files').addEventListener('change', handleFileSelect, false);
   }
 //})();

@@ -86,6 +86,7 @@ app.controller('mainCtrl', function($scope, $rootScope, dataService) {
           });
         dataService.getPV(lat, lon).then(function(res) {
           loadSolarHC(res.data);
+          $(window).resize();
           solarData = res.data;
           $scope.dctotal = res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)
         });
