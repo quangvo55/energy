@@ -104,12 +104,13 @@ app.controller('mainCtrl', function($scope, $rootScope, dataService) {
             $scope.showGraphs = true;
             $scope.utilName = res.data.outputs.utility_name;
             loadUtilHC(res.data);
+            $(window).resize();
           });
           dataService.getPV(lat, lon).then(function(res) {
-            loadSolarHC(res.data);
-            $('window').resize();
-            solarData = res.data;
-            $scope.dctotal = res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)
+             loadSolarHC(res.data);
+          $(window).resize();
+          solarData = res.data;
+          $scope.dctotal = (res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000).toFixed(2);
           });
           /*dataService.getTarriffs("LADWP").then(function(res) {
             console.log(res);
