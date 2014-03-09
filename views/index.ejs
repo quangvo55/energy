@@ -7,26 +7,15 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/base.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/skeleton.css">
   <link rel="stylesheet" type="text/css" href="/stylesheets/layout.css">
-<<<<<<< HEAD
   <link rel="stylesheet" type="text/css" href="/stylesheets/fontello.css">
-=======
-  <link rel="stylesheet" type="text/css" href="stylesheets/fontello.css">
->>>>>>> f2ece4f9b8f0c2552716e8979784900eea9fd7a9
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
 </head>
 <body ng-controller='mainCtrl'>
 <header>
   <div class="container">
-<<<<<<< HEAD
   <img src="/images/sunhome.png" alt="sunhomelogo" width="50">
         <h1 id="banner-header"><a href="#">SunHome</a></h1>
-=======
-    <div class="eight columns">
-        <img src="sunhome.png" alt="sunhomelogo" width="50">
-        <h1 id="banner-header"><a href="#">SunHome</a></h1>
-    </div>
->>>>>>> f2ece4f9b8f0c2552716e8979784900eea9fd7a9
   </div>
 </header>
 <div class="container">
@@ -63,10 +52,7 @@
               <h1 class="icon-cog-alt">Utility Information for: <span class="dataTitle">{{utilName}}</span></h1>
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
-<<<<<<< HEAD
-              <div class="eight columns">
               <button id="gbUpload"><img src="/images/gblogo.png"/></button>
-            </div>
             <div class="page-divider"></div>
             <h1 class="icon-sun">Solar Information</h1>
             <h3 id="showme" style="display:none">System Size: 4.05</h3>
@@ -79,29 +65,7 @@
               <div class="page-divider"></div>
               <div id="savings"></div>
             </div>
-=======
-            <h1 class="icon-sun">Solar Information</h1>
-            <h3>Annual Solar Output: {{dctotal}} <div style="display:inline" id="annualCon"></div></h3>
-            <div id="pvChart"></div>
-            <div class="page-divider"></div>
-            <h1 id="gbGraph" class="icon-flash">Daily Power Consumption</h1>
-            <div id="dcChart"></div>
->>>>>>> f2ece4f9b8f0c2552716e8979784900eea9fd7a9
         </div>
-</div>
-    <!--<div class="col-md-6" id="return1">
-      <div ng-show="add.addr1.length">
-        Your address is: <br/><b>
-        {{add.addr1 | uppercase}} {{add.city | uppercase}} <span ng-show="add.state.length">,</span>{{add.state | uppercase}} {{add.zip}}</b> <br/>
-      </div>
-      <div ng-show="ajax2 == true">
-      <h1>Solar Data</h1>
-      AC Annual: {{pvdata.outputs.ac_annual}} <br/>
-      Solar Radiation Anuual: {{pvdata.outputs.solrad_annual}} <br/>
-      </div>
-    </div>-->
-
-  </div>
 </div>
 <script src="/javascripts/highcharts.js"></script>
 <script type="text/javascript" src="/javascripts/mainCtrl.js"></script>
