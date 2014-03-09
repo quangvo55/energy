@@ -46,6 +46,7 @@
     costPerMonth(monthlyData);
     $("#gbGraph").show();
     loadSolarHC(solarData, monthlyTotal);
+    $(window).resize();
     var annualCon = (monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
     $("#annualCon").html("Annual Energy Usage: " + annualCon + " kW");
     yearTotal = monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});

@@ -83,8 +83,7 @@ function loadSolarHC(pvdata, con) {
         },
         legend: {
             layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
+            align: 'bottom',
             borderWidth: 0,
             itemStyle: {
               fontSize: '16px'
@@ -95,7 +94,7 @@ function loadSolarHC(pvdata, con) {
             data: pvdata.outputs.dc_monthly
         },
         {
-          name: 'Monthly Consumption',
+          name: 'Monthly Usage',
           data: con
         }]
     });
