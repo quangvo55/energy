@@ -5,32 +5,8 @@
   monthlyData = [], monthlyCost = [], monthlyTotal = [],
   solarData, yearTotal;
   //init arrays
-  dailyData = dayFill(365);
-  monthlyData = dayFill(12);
-
-  /*function handleFileSelect(evt) {
-    //http://stackoverflow.com/questions/21318045/javascript-upload-and-read-xml-file-on-the-client-side
-    var files = evt.target.files; // FileList object
-
-    // Loop through the FileList
-    for (var i = 0, f; f = files[i]; i++) {
-
-      var reader = new FileReader();
-
-      // Closure to capture the file information.
-      reader.onload = (function(theFile) {
-        return function(e) {
-          // Print the contents of the file
-          gbJSONData = xmlToJson(parseXml(e.target.result));
-          gbData(gbJSONData);
-        };
-      })(f);
-      // Read in the file
-      //reader.readAsDataText(f,UTF-8);
-      reader.readAsText(f,"UTF-8");
-    }
-  }*/
-
+  dailyData = indexFill(365);
+  monthlyData = indexFill(12);
 
   function gbData(gbJSONData) {
     var dataEntries = gbJSONData.feed.entry;
@@ -54,12 +30,11 @@
     $("#savings").html("<h2>Annual Savings: <span class='highlight'>$"+yearTotal+"</span></h2>");
   }
 
-  function dayFill(max) {
+  function indexFill(max) {
     var arr = [];
     for (var i=0; i<max; i++) {arr.push([]);}
     return arr;
   }
-
 
   function allToDayData(allData) {
     allData.unshift(0);
@@ -72,8 +47,6 @@
     }
   }
 
-
-
   function dailyToMonthData(dailyData) {
     for (var i=0;i<daysInMonth.length; i++) {
       monthlyData[i] = dailyData.splice(0, daysInMonth[i]);
@@ -81,6 +54,7 @@
   }
   //costPerMonth(monthlyData);
   function costPerMonth(monthlyData) {
+    //tariff rates
     var rate2Months = [6,7,,8,9];
     var t1Rate = .07;
     var t2Rate = [.07, .085, .12];
@@ -147,7 +121,7 @@
   };
 
   window.onload = function() {
-      if (window.DOMParser) {
+      /*if (window.DOMParser) {
         parseXml = function(xmlStr) {
             return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
         };
@@ -160,7 +134,7 @@
         };
     } else {
         parseXml = function() { return null; }
-    }
+    }*/
     $('#gbGraph').hide();
     $("#gbUpload").click(function() {
       $.ajax({
@@ -168,11 +142,34 @@
     url: "coastal.xml",
     dataType: "xml",
     success: function(xml){
-          gbJSONData = xmlToJson(xml);
-          gbData(gbJSONData);
+      gbJSONData = xmlToJson(xml);
+      gbData(gbJSONData);
     }
 });
     });
     //document.getElementById('files').addEventListener('change', handleFileSelect, false);
   }
 //})();
+
+  /*function handleFileSelect(evt) {
+    //http://stackoverflow.com/questions/21318045/javascript-upload-and-read-xml-file-on-the-client-side
+    var files = evt.target.files; // FileList object
+
+    // Loop through the FileList
+    for (var i = 0, f; f = files[i]; i++) {
+
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          // Print the contents of the file
+          gbJSONData = xmlToJson(parseXml(e.target.result));
+          gbData(gbJSONData);
+        };
+      })(f);
+      // Read in the file
+      //reader.readAsDataText(f,UTF-8);
+      reader.readAsText(f,"UTF-8");
+    }
+  }*/
