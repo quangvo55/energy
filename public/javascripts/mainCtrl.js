@@ -136,21 +136,23 @@ app.service('dataService', function($http) {
     self.monthlyData = self.indexFill(12);
     var dataEntries = gbJSONData.feed.entry;
     //get all data points into one array
-    for (var i=4; i<dataEntries.length-1; i++) {
-        var intReadingsArr = dataEntries[i].content.IntervalBlock.IntervalReading;
-          for (var j=0; j<intReadingsArr.length; j++) {
-            self.allData.push(intReadingsArr[j].value['#text']);
-          }
-    }
+    self.getAllDataPoints(dataEntries);
     self.allToDayData(self.allData);
     dailyConHC(self.dailyData); //highcharts
     self.dailyToMonthData(self.dailyData);
     self.costPerMonth(self.monthlyData);
     loadSolarHC(solarData, self.monthlyTotal);
     $(window).resize();
-    self.annualCon = (self.monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
-    self.yearTotal = self.monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    
+  };
+
+  this.getAllDataPoints = function(dataEntries) {
+    var self = this;
+    for (var i=4; i<dataEntries.length-1; i++) {
+      var intReadingsArr = dataEntries[i].content.IntervalBlock.IntervalReading;
+        for (var j=0; j<intReadingsArr.length; j++) {
+          self.allData.push(intReadingsArr[j].value['#text']);
+        }
+    }
   };
 
   this.allToDayData = function(allData) {
@@ -161,7 +163,7 @@ app.service('dataService', function($http) {
       if (i%24==0&&i!=0) j++;
     }
     for (var i=0; i<self.dailyData.length; i++) {
-      self.dailyData[i] = self.dailyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000
+      self.dailyData[i] = self.dailyData[i].reduce(self.sum,0)/1000
     }
   };
 
@@ -178,31 +180,29 @@ app.service('dataService', function($http) {
     var rate2Months = [6,7,,8,9];
     var t1Rate = .07;
     var t2Rate = [.07, .085, .12];
-    for (var i=0; i< self.monthlyData.length; i++) {
-      self.monthlyTotal[i] = self.monthlyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0);
+    var mD = self.monthlyData;
+    for (var i=0; i< mD.length; i++) {
+      self.monthlyTotal[i] = mD[i].reduce(self.sum,0);
       var total = 0;
       var etotal = 0;
       if (rate2Months.indexOf(i) == -1) {
-          for (var j=0; j<self.monthlyData[i].length;j++) {
-            total += self.monthlyData[i][j] * t1Rate;
+          for (var j=0; j<mD[i].length;j++) {
+            total += mD[i][j] * t1Rate;
           }
       } else {
-        for (var j=0; j<self.monthlyData[i].length;j++) {
-          if (0 < etotal && etotal < 350) {
-            total += self.monthlyData[i][j] * t2Rate[0];
-          } else if ( 350 < etotal && etotal < 1050) {
-            total += self.monthlyData[i][j] * t2Rate[1];
-          } else if (etotal > 1050) {
-            total += self.monthlyData[i][j] * t2Rate[2];
-          }
-          etotal += self.monthlyData[i][j];
+        for (var j=0; j<mD[i].length;j++) {
+          total += (0 < etotal && etotal <= 350) ?  mD[i][j] * t2Rate[0] : (350 < etotal && etotal <= 1050) ? mD[i][j] * t2Rate[1] : mD[i][j] * t2Rate[2];
+          etotal += mD[i][j];
         }
       }
       self.monthlyCost.push(total);
     }
-    console.log('done');
+    //calc annual consumption and cost
+    self.annualCon = (self.monthlyTotal.reduce(self.sum)/1000).toFixed(2);
+    self.yearTotal = self.monthlyCost.reduce(self.sum);
   };
 
+  //http://stackoverflow.com/questions/1773550/xml-json-conversion-in-javascript
   this.xmlToJson = function(xml) {
     var self = this;
     // Create the return object
@@ -241,5 +241,5 @@ app.service('dataService', function($http) {
     return obj;
   };
 
-
+  this.sum = function(a, b) {return parseInt(a)+parseInt(b);};
 });
