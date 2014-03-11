@@ -64,12 +64,13 @@ app.service('apiService', function($http) {
   }
 });
 
-app.controller('mainCtrl', function($scope, $rootScope, apiService, dataService) {
+app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
     $scope.data = null;
     $scope.utilName;
     $scope.showGraphs = false;
     $scope.addy = false;
     $scope.dctotal;
+    $scope.gbGraph = false;
     $scope.enterAddress = function() {
       $scope.addy = true;
     };
@@ -106,23 +107,20 @@ app.controller('mainCtrl', function($scope, $rootScope, apiService, dataService)
       });
     };
     $scope.gbUpload = function() {
-      $http({
-      method: 'GET',
-      url: 'coastal.xml',
-    }, function(data) {
-      gbJSONData = dataService.xmlToJson(xml);
-      dataService.gbData(gbJSONData);
-    })
-    }
+      $http.get('coastal.xml').success(function(data) {
+        var xml = (new window.DOMParser() ).parseFromString(data, "text/xml");
+        gbJSONData = dataService.xmlToJson(xml);
+        dataService.parseGBData(gbJSONData);
+        $scope.gbGraph = true;
+      });
+    };
 });
 
 app.service('dataService', function($http) {
-  this.allData = [], this.dailyData = [], 
+  this.allData = [], this.dailyData = [],
   this.daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31],
   this.monthlyData = [], this.monthlyCost = [], this.monthlyTotal = [],
   this.solarData, this.yearTotal;
-  dailyData = indexFill(365);
-  monthlyData = indexFill(12);
 
   this.indexFill = function(max) {
     var arr = [];
@@ -131,77 +129,81 @@ app.service('dataService', function($http) {
   };
 
   this.parseGBData = function(gbJSONData) {
+    var self = this;
+    self.dailyData = self.indexFill(365);
+    self.monthlyData = self.indexFill(12);
     var dataEntries = gbJSONData.feed.entry;
     //get all data points into one array
     for (var i=4; i<dataEntries.length-1; i++) {
         var intReadingsArr = dataEntries[i].content.IntervalBlock.IntervalReading;
           for (var j=0; j<intReadingsArr.length; j++) {
-            allData.push(intReadingsArr[j].value['#text']);
+            self.allData.push(intReadingsArr[j].value['#text']);
           }
     }
-    allToDayData(allData);
-    dailyToMonthData(dailyData);
-    costPerMonth(monthlyData);
-    $("#gbGraph").show();
-    $('#showme').show();
-    loadSolarHC(solarData, monthlyTotal);
+    self.allToDayData(self.allData);
+    dailyConHC(self.dailyData); //highcharts
+    self.dailyToMonthData(self.dailyData);
+    self.costPerMonth(self.monthlyData);
+    loadSolarHC(solarData, self.monthlyTotal);
     $(window).resize();
-    var annualCon = (monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
+    var annualCon = (self.monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
     $("#annualCon").html("Annual Energy Usage: " + annualCon + " kW");
-    yearTotal = monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
+    yearTotal = self.monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
     $("#savings").html("<h2>Annual Savings: <span class='highlight'>$"+yearTotal+"</span></h2>");
-
-    dailyConHC(dailyData); //highcharts
   };
 
   this.allToDayData = function(allData) {
-    allData.unshift(0);
-    for (var i=1, j=0; i< allData.length; i++) {
-      dailyData[j].push(allData[i]);
+    var self = this;
+    self.allData.unshift(0);
+    for (var i=1, j=0; i< self.allData.length; i++) {
+      self.dailyData[j].push(allData[i]);
       if (i%24==0&&i!=0) j++;
     }
-    for (var i=0; i<dailyData.length; i++) {
-      dailyData[i] = dailyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000
+    for (var i=0; i<self.dailyData.length; i++) {
+      self.dailyData[i] = self.dailyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000
     }
   };
 
   this.dailyToMonthData = function(dailyData) {
-    for (var i=0;i<daysInMonth.length; i++) {
-      monthlyData[i] = dailyData.splice(0, daysInMonth[i]);
+    var self = this;
+    for (var i=0;i<self.daysInMonth.length; i++) {
+      self.monthlyData[i] = self.dailyData.splice(0, self.daysInMonth[i]);
     }
   };
 
   this.costPerMonth = function(monthlyData) {
+    var self = this;
     //tariff rates
     var rate2Months = [6,7,,8,9];
     var t1Rate = .07;
     var t2Rate = [.07, .085, .12];
-    for (var i=0; i< monthlyData.length; i++) {
-      monthlyTotal[i] = monthlyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0);
+    for (var i=0; i< self.monthlyData.length; i++) {
+      self.monthlyTotal[i] = self.monthlyData[i].reduce(function(a, b) {return parseInt(a)+parseInt(b);},0);
       var total = 0;
       var etotal = 0;
       if (rate2Months.indexOf(i) == -1) {
-          for (var j=0; j<monthlyData[i].length;j++) {
-            total += monthlyData[i][j] * t1Rate;
+          for (var j=0; j<self.monthlyData[i].length;j++) {
+            total += self.monthlyData[i][j] * t1Rate;
           }
       } else {
-        for (var j=0; j<monthlyData[i].length;j++) {
+        for (var j=0; j<self.monthlyData[i].length;j++) {
           if (0 < etotal && etotal < 350) {
-            total += monthlyData[i][j] * t2Rate[0];
+            total += self.monthlyData[i][j] * t2Rate[0];
           } else if ( 350 < etotal && etotal < 1050) {
-            total += monthlyData[i][j] * t2Rate[1];
+            total += self.monthlyData[i][j] * t2Rate[1];
           } else if (etotal > 1050) {
-            total += monthlyData[i][j] * t2Rate[2];
+            total += self.monthlyData[i][j] * t2Rate[2];
           }
-          etotal += monthlyData[i][j];
+          etotal += self.monthlyData[i][j];
         }
       }
-      monthlyCost.push(total);
+      self.monthlyCost.push(total);
     }
     console.log('done');
   };
 
   this.xmlToJson = function(xml) {
+    var self = this;
     // Create the return object
     var obj = {};
 
@@ -224,14 +226,14 @@ app.service('dataService', function($http) {
         var item = xml.childNodes.item(i);
         var nodeName = item.nodeName;
         if (typeof(obj[nodeName]) == "undefined") {
-          obj[nodeName] = xmlToJson(item);
+          obj[nodeName] = self.xmlToJson(item);
         } else {
           if (typeof(obj[nodeName].push) == "undefined") {
             var old = obj[nodeName];
             obj[nodeName] = [];
             obj[nodeName].push(old);
           }
-          obj[nodeName].push(xmlToJson(item));
+          obj[nodeName].push(self.xmlToJson(item));
         }
       }
     }

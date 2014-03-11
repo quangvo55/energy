@@ -52,15 +52,15 @@
               <h1 class="icon-cog-alt">Utility Information for: <span class="dataTitle">{{utilName}}</span></h1>
               <div id="kwhChart"></div>
               <div class="page-divider"></div>
-              <button ng-click="gbUpload" id="gbUpload"><img src="/images/gblogo.png"/></button>
+              <button ng-click="gbUpload()" id="gbUpload"><img src="/images/gblogo.png"/></button>
             <div class="page-divider"></div>
             <h1 class="icon-sun">Solar Information</h1>
-            <h3 id="showme" style="display:none">System Size: 4.05</h3>
+            <h3>System Size: 4.05</h3>
             <h3>Annual Solar Output: {{dctotal}} kW <div id="annualCon"></div></h3>
             <div id="pvChart"></div>
             <div class="page-divider"></div>
             <div class="sixteen columns">          
-              <h1 id="gbGraph" class="icon-flash">Daily Power Consumption</h1>
+              <h1 id="gbGraph" ng-show="gbGraph == true" class="icon-flash">Daily Power Consumption</h1>
               <div id="dcChart"></div>
               <div class="page-divider"></div>
               <div id="savings"></div>
