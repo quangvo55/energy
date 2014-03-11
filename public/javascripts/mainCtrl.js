@@ -108,10 +108,12 @@ app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
     };
     $scope.gbUpload = function() {
       $http.get('coastal.xml').success(function(data) {
-        var xml = (new window.DOMParser() ).parseFromString(data, "text/xml");
+        var xml = (new window.DOMParser()).parseFromString(data, "text/xml");
         gbJSONData = dataService.xmlToJson(xml);
         dataService.parseGBData(gbJSONData);
         $scope.gbGraph = true;
+        $scope.annualCon = "Annual Energy Usage: " + dataService.annualCon + " kW";
+        $scope.savings = dataService.yearTotal;
       });
     };
 });
@@ -120,7 +122,7 @@ app.service('dataService', function($http) {
   this.allData = [], this.dailyData = [],
   this.daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31],
   this.monthlyData = [], this.monthlyCost = [], this.monthlyTotal = [],
-  this.solarData, this.yearTotal;
+  this.solarData, this.yearTotal, this.annualCon;
 
   this.indexFill = function(max) {
     var arr = [];
@@ -146,10 +148,9 @@ app.service('dataService', function($http) {
     self.costPerMonth(self.monthlyData);
     loadSolarHC(solarData, self.monthlyTotal);
     $(window).resize();
-    var annualCon = (self.monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
-    $("#annualCon").html("Annual Energy Usage: " + annualCon + " kW");
-    yearTotal = self.monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
-    $("#savings").html("<h2>Annual Savings: <span class='highlight'>$"+yearTotal+"</span></h2>");
+    self.annualCon = (self.monthlyTotal.reduce(function(a, b) {return parseInt(a)+parseInt(b);})/1000).toFixed(2);
+    self.yearTotal = self.monthlyCost.reduce(function(a, b) {return parseInt(a)+parseInt(b);});
+    
   };
 
   this.allToDayData = function(allData) {

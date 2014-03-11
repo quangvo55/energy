@@ -52,7 +52,7 @@ function loadUtilHC(utildata) {
 }
 
 function loadSolarHC(pvdata, con) {
-   chart1 = $('#pvChart').highcharts({
+   $('#pvChart').highcharts({
         title: {
             text: 'Monthly Solar Production',
             x: -20 //center
@@ -103,7 +103,7 @@ function loadSolarHC(pvdata, con) {
 function dailyConHC(dataset) {
   $('#dcChart').highcharts({
       chart: {
-          //zoomType: 'x',
+          zoomType: 'x',
           spacingRight: 20
       },
       title: {
@@ -116,7 +116,7 @@ function dailyConHC(dataset) {
       },
       xAxis: {
           type: 'datetime',
-          //maxZoom: 14 * 24 * 3600000, // fourteen days
+          maxZoom: 14 * 24 * 3600000, // fourteen days
           title: {
               text: null
           }
