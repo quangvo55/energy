@@ -16,8 +16,8 @@ app.config(function($httpProvider) {
 });
 
 app.service('apiService', function($http) {
-  this.google_api_key = 'AIzaSyB1rXlPri1LEFcjbySjyo3_q1Z8RuUPWpU',
-  this.nrel_api_key = '6cdltAisWpaRxkOYMHNFB5c1IGWPc5NFUPXfX4T2',
+  this.google_api_key = 'AIzaSyB1rXlPri1LEFcjbySjyo3_q1Z8RuUPWpU';
+  this.nrel_api_key = '6cdltAisWpaRxkOYMHNFB5c1IGWPc5NFUPXfX4T2';
   this.getCoords = function(address) {
     return $http({
       method: 'GET',
@@ -31,7 +31,7 @@ app.service('apiService', function($http) {
       console.log(data);
       alert(data);
     });
-  },
+  };
   this.getUtil = function(lat, lon) {
     return $http({
       method: 'GET',
@@ -55,74 +55,25 @@ app.service('apiService', function($http) {
         lon : lon
       }
     });
-  },
+  };
   this.getTarriffs = function(utilName) {
     return $http({
       method: 'GET',
       url: 'ladwp.json',
     });
-  }
-});
-
-app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
-    $scope.data = null;
-    $scope.utilName;
-    $scope.showGraphs = false;
-    $scope.addy = false;
-    $scope.dctotal;
-    $scope.gbGraph = false;
-    $scope.enterAddress = function() {
-      $scope.addy = true;
-    };
-    $scope.getData = function(lat, lon) {
-      apiService.getUtil(lat, lon).then(function(res) {
-        $scope.showGraphs = true;
-        $scope.utilName = res.data.outputs.utility_name;
-        loadUtilHC(res.data);
-        $(window).resize();
-      });
-      apiService.getPV(lat, lon).then(function(res) {
-        loadSolarHC(res.data);
-        $(window).resize();
-        solarData = res.data;
-        $scope.dctotal = (res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000).toFixed(2);
-      });
-    };
-    $scope.geo = function() {
-      $scope.addy = false;
-      navigator.geolocation.getCurrentPosition(function(data) {
-      var lat = data.coords.latitude;
-      var lon = data.coords.longitude;
-      $scope.getData(lat, lon);
-      });
-    };
-    $scope.submit = function(energy) {
-      $scope.addy = false;
-      var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
-      apiService.getCoords(address).then(
-        function(res) {
-          lat = res.data.results[0].geometry.location.lat;
-          lon = res.data.results[0].geometry.location.lng;
-          $scope.getData(lat, lon);
-      });
-    };
-    $scope.gbUpload = function() {
-      $http.get('coastal.xml').success(function(data) {
-        var xml = (new window.DOMParser()).parseFromString(data, "text/xml");
-        gbJSONData = dataService.xmlToJson(xml);
-        dataService.parseGBData(gbJSONData);
-        $scope.gbGraph = true;
-        $scope.annualCon = "Annual Energy Usage: " + dataService.annualCon + " kW";
-        $scope.savings = dataService.yearTotal;
-      });
-    };
+  };
 });
 
 app.service('dataService', function($http) {
-  this.allData = [], this.dailyData = [],
-  this.daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31],
-  this.monthlyData = [], this.monthlyCost = [], this.monthlyTotal = [],
-  this.solarData, this.yearTotal, this.annualCon;
+  this.allData = []; 
+  this.dailyData = [];
+  this.daysInMonth = [31,28,31,30,31,30,31,31,30,31,30,31];
+  this.monthlyData = []; 
+  this.monthlyCost = []; 
+  this.monthlyTotal = [];
+  this.solarData; 
+  this.yearTotal; 
+  this.annualCon;
 
   this.indexFill = function(max) {
     var arr = [];
@@ -242,4 +193,58 @@ app.service('dataService', function($http) {
   };
 
   this.sum = function(a, b) {return parseInt(a)+parseInt(b);};
+});
+
+app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
+    $scope.data = null;
+    $scope.utilName;
+    $scope.showGraphs = false;
+    $scope.addy = false;
+    $scope.dctotal;
+    $scope.gbGraph = false;
+    $scope.enterAddress = function() {
+      $scope.addy = true;
+    };
+    $scope.getData = function(lat, lon) {
+      apiService.getUtil(lat, lon).then(function(res) {
+        $scope.showGraphs = true;
+        $scope.utilName = res.data.outputs.utility_name;
+        loadUtilHC(res.data);
+        $(window).resize();
+      });
+      apiService.getPV(lat, lon).then(function(res) {
+        loadSolarHC(res.data);
+        $(window).resize();
+        solarData = res.data;
+        $scope.dctotal = (res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000).toFixed(2);
+      });
+    };
+    $scope.geo = function() {
+      $scope.addy = false;
+      navigator.geolocation.getCurrentPosition(function(data) {
+      var lat = data.coords.latitude;
+      var lon = data.coords.longitude;
+      $scope.getData(lat, lon);
+      });
+    };
+    $scope.submit = function(energy) {
+      $scope.addy = false;
+      var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
+      apiService.getCoords(address).then(
+        function(res) {
+          lat = res.data.results[0].geometry.location.lat;
+          lon = res.data.results[0].geometry.location.lng;
+          $scope.getData(lat, lon);
+      });
+    };
+    $scope.gbUpload = function() {
+      $http.get('coastal.xml').success(function(data) {
+        var xml = (new window.DOMParser()).parseFromString(data, "text/xml");
+        gbJSONData = dataService.xmlToJson(xml);
+        dataService.parseGBData(gbJSONData);
+        $scope.gbGraph = true;
+        $scope.annualCon = "Annual Energy Usage: " + dataService.annualCon + " kW";
+        $scope.savings = dataService.yearTotal;
+      });
+    };
 });
