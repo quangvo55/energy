@@ -18,6 +18,7 @@ app.config(function($httpProvider) {
 app.service('apiService', function($http) {
   this.google_api_key = 'AIzaSyB1rXlPri1LEFcjbySjyo3_q1Z8RuUPWpU';
   this.nrel_api_key = '6cdltAisWpaRxkOYMHNFB5c1IGWPc5NFUPXfX4T2';
+  //Google Geolocaton to get lat/lon 
   this.getCoords = function(address) {
     return $http({
       method: 'GET',
@@ -32,6 +33,7 @@ app.service('apiService', function($http) {
       alert(data);
     });
   };
+  //Get Utility rates from nrel utility rate api
   this.getUtil = function(lat, lon) {
     return $http({
       method: 'GET',
@@ -43,6 +45,7 @@ app.service('apiService', function($http) {
       }
     });
   },
+  //Get solar output estimate from nrel pvwatts api
   this.getPV = function(lat, lon) {
     return $http({
       method: 'GET',
@@ -54,12 +57,6 @@ app.service('apiService', function($http) {
         lat : lat,
         lon : lon
       }
-    });
-  };
-  this.getTarriffs = function(utilName) {
-    return $http({
-      method: 'GET',
-      url: 'ladwp.json',
     });
   };
 });
@@ -80,7 +77,7 @@ app.service('dataService', function($http) {
     for (var i=0; i<max; i++) arr.push([]);
     return arr;
   };
-
+  //walks through data-parsing steps
   this.parseGBData = function(gbJSONData) {
     var self = this;
     self.dailyData = self.indexFill(365);
@@ -95,7 +92,8 @@ app.service('dataService', function($http) {
     loadSolarHC(solarData, self.monthlyTotal);
     $(window).resize();
   };
-
+  //data is presented in hourly intervals, spread across 11 arrays, combine all data points into single array
+  //for easier processing
   this.getAllDataPoints = function(dataEntries) {
     var self = this;
     for (var i=4; i<dataEntries.length-1; i++) {
@@ -105,7 +103,7 @@ app.service('dataService', function($http) {
         }
     }
   };
-
+  //convert all data points into daily data points
   this.allToDayData = function(allData) {
     var self = this;
     self.allData.unshift(0);
@@ -117,14 +115,15 @@ app.service('dataService', function($http) {
       self.dailyData[i] = self.dailyData[i].reduce(self.sum,0)/1000
     }
   };
-
+  //convert all daly data into monthly data based on days in month
   this.dailyToMonthData = function(dailyData) {
     var self = this;
     for (var i=0;i<self.daysInMonth.length; i++) {
       self.monthlyData[i] = self.dailyData.splice(0, self.daysInMonth[i]);
     }
   };
-
+  //calculate dollar cost based on tariff rate, tariff rate hardcoded from LADWP for hackathon
+  // but should be dynamic depending on lat/lon
   this.costPerMonth = function(monthlyData) {
     var self = this;
     //tariff rates
@@ -202,9 +201,7 @@ app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
     $scope.addy = false;
     $scope.dctotal;
     $scope.gbGraph = false;
-    $scope.enterAddress = function() {
-      $scope.addy = true;
-    };
+    //makes calls to the apis
     $scope.getData = function(lat, lon) {
       apiService.getUtil(lat, lon).then(function(res) {
         $scope.showGraphs = true;
@@ -219,6 +216,11 @@ app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
         $scope.dctotal = (res.data.outputs.dc_monthly.reduce(function(a, b) {return parseInt(a)+parseInt(b);},0)/1000).toFixed(2);
       });
     };
+    //click event handlers
+    $scope.enterAddress = function() {
+      $scope.addy = true;
+    };
+    //use my location button
     $scope.geo = function() {
       $scope.addy = false;
       navigator.geolocation.getCurrentPosition(function(data) {
@@ -227,6 +229,7 @@ app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
       $scope.getData(lat, lon);
       });
     };
+    //manual address entry submit button
     $scope.submit = function(energy) {
       $scope.addy = false;
       var address = energy.addr1+" "+energy.city+","+energy.state+ " " + energy.zip;
@@ -237,6 +240,7 @@ app.controller('mainCtrl', function($scope, $http, apiService, dataService) {
           $scope.getData(lat, lon);
       });
     };
+    //green button
     $scope.gbUpload = function() {
       $http.get('coastal.xml').success(function(data) {
         var xml = (new window.DOMParser()).parseFromString(data, "text/xml");
